@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ITMS — Intelligent Traffic Management System</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&family=JetBrains+Mono:wght@400;700&display=swap"
+    rel="stylesheet" />
   <style>
     :root {
       --black: #080c10;
@@ -24,9 +27,17 @@
       --green: #39ff14;
     }
 
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-    html { scroll-behavior: smooth; }
+    html {
+      scroll-behavior: smooth;
+    }
 
     body {
       background: var(--black);
@@ -41,8 +52,8 @@
       position: fixed;
       inset: 0;
       background-image:
-        linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+        linear-gradient(rgba(0, 229, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 229, 255, 0.03) 1px, transparent 1px);
       background-size: 40px 40px;
       pointer-events: none;
       z-index: 0;
@@ -51,13 +62,15 @@
     /* ──── NAV ──── */
     nav {
       position: fixed;
-      top: 0; left: 0; right: 0;
+      top: 0;
+      left: 0;
+      right: 0;
       z-index: 100;
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 1rem 3rem;
-      background: rgba(8,12,16,0.85);
+      background: rgba(8, 12, 16, 0.85);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
     }
@@ -70,7 +83,9 @@
       text-decoration: none;
     }
 
-    .nav-logo span { color: var(--white); }
+    .nav-logo span {
+      color: var(--white);
+    }
 
     nav ul {
       display: flex;
@@ -88,7 +103,9 @@
       transition: color 0.2s;
     }
 
-    nav ul a:hover { color: var(--accent); }
+    nav ul a:hover {
+      color: var(--accent);
+    }
 
     .nav-badge {
       background: var(--accent);
@@ -136,7 +153,9 @@
       animation: fadeUp 0.8s 0.4s forwards;
     }
 
-    .hero-title .highlight { color: var(--accent); }
+    .hero-title .highlight {
+      color: var(--accent);
+    }
 
     .hero-sub {
       font-family: 'Bebas Neue', sans-serif;
@@ -188,7 +207,10 @@
       color: var(--black);
     }
 
-    .btn-primary:hover { background: #00c9e0; transform: translateY(-2px); }
+    .btn-primary:hover {
+      background: #00c9e0;
+      transform: translateY(-2px);
+    }
 
     .btn-ghost {
       background: transparent;
@@ -196,7 +218,10 @@
       border: 1px solid var(--accent);
     }
 
-    .btn-ghost:hover { background: rgba(0,229,255,0.08); transform: translateY(-2px); }
+    .btn-ghost:hover {
+      background: rgba(0, 229, 255, 0.08);
+      transform: translateY(-2px);
+    }
 
     /* ──── TRAFFIC LIGHT ANIMATION ──── */
     .traffic-scene {
@@ -221,33 +246,43 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
-      box-shadow: 0 0 40px rgba(0,0,0,0.8), inset 0 0 20px rgba(0,0,0,0.5);
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(0, 0, 0, 0.5);
     }
 
     .light-bulb {
       width: 44px;
       height: 44px;
       border-radius: 50%;
-      border: 2px solid rgba(255,255,255,0.05);
+      border: 2px solid rgba(255, 255, 255, 0.05);
       position: relative;
       transition: all 0.4s;
     }
 
-    .light-bulb.red-off  { background: #3d0a0a; }
-    .light-bulb.yellow-off { background: #3d300a; }
-    .light-bulb.green-off { background: #0a3d0a; }
+    .light-bulb.red-off {
+      background: #3d0a0a;
+    }
+
+    .light-bulb.yellow-off {
+      background: #3d300a;
+    }
+
+    .light-bulb.green-off {
+      background: #0a3d0a;
+    }
 
     .light-bulb.red-on {
       background: var(--red);
-      box-shadow: 0 0 20px var(--red), 0 0 40px rgba(255,59,59,0.4);
+      box-shadow: 0 0 20px var(--red), 0 0 40px rgba(255, 59, 59, 0.4);
     }
+
     .light-bulb.yellow-on {
       background: var(--yellow);
-      box-shadow: 0 0 20px var(--yellow), 0 0 40px rgba(255,215,0,0.4);
+      box-shadow: 0 0 20px var(--yellow), 0 0 40px rgba(255, 215, 0, 0.4);
     }
+
     .light-bulb.green-on {
       background: var(--green);
-      box-shadow: 0 0 20px var(--green), 0 0 40px rgba(57,255,20,0.4);
+      box-shadow: 0 0 20px var(--green), 0 0 40px rgba(57, 255, 20, 0.4);
     }
 
     .pole-stem {
@@ -333,7 +368,9 @@
       margin-bottom: 1.5rem;
     }
 
-    .section-title .dim { color: var(--muted); }
+    .section-title .dim {
+      color: var(--muted);
+    }
 
     /* ──── PROBLEM SECTION ──── */
     #problem {
@@ -347,7 +384,7 @@
       margin-top: 3rem;
     }
 
-    .problem-text { }
+    .problem-text {}
 
     .problem-text p {
       font-size: 1rem;
@@ -356,7 +393,9 @@
       margin-bottom: 1.2rem;
     }
 
-    .problem-text p strong { color: var(--text); }
+    .problem-text p strong {
+      color: var(--text);
+    }
 
     .congestion-vis {
       background: var(--panel);
@@ -379,21 +418,27 @@
     }
 
     .road.horizontal {
-      top: 50%; left: 0; right: 0;
+      top: 50%;
+      left: 0;
+      right: 0;
       height: 50px;
       transform: translateY(-50%);
     }
 
     .road.vertical {
-      left: 50%; top: 0; bottom: 0;
+      left: 50%;
+      top: 0;
+      bottom: 0;
       width: 50px;
       transform: translateX(-50%);
     }
 
     .intersection {
       position: absolute;
-      top: 50%; left: 50%;
-      width: 50px; height: 50px;
+      top: 50%;
+      left: 50%;
+      width: 50px;
+      height: 50px;
       transform: translate(-50%, -50%);
       background: #222233;
       border: 1px solid var(--border);
@@ -408,8 +453,13 @@
     }
 
     @keyframes carMove {
-      from { transform: translateX(var(--from)); }
-      to   { transform: translateX(var(--to)); }
+      from {
+        transform: translateX(var(--from));
+      }
+
+      to {
+        transform: translateX(var(--to));
+      }
     }
 
     .vis-label {
@@ -454,7 +504,9 @@
       transform: translateY(-4px);
     }
 
-    .arch-node:hover .node-icon { color: var(--accent); }
+    .arch-node:hover .node-icon {
+      color: var(--accent);
+    }
 
     .node-icon {
       font-size: 2rem;
@@ -516,15 +568,22 @@
     .tech-card::before {
       content: '';
       position: absolute;
-      top: 0; left: 0;
+      top: 0;
+      left: 0;
       width: 3px;
       height: 0;
       background: var(--card-accent, var(--accent));
       transition: height 0.4s;
     }
 
-    .tech-card:hover::before { height: 100%; }
-    .tech-card:hover { border-color: var(--card-accent, var(--accent)); transform: translateY(-3px); }
+    .tech-card:hover::before {
+      height: 100%;
+    }
+
+    .tech-card:hover {
+      border-color: var(--card-accent, var(--accent));
+      transform: translateY(-3px);
+    }
 
     .tech-icon {
       font-size: 2.2rem;
@@ -571,7 +630,9 @@
       position: relative;
     }
 
-    .step:last-child { border-bottom: none; }
+    .step:last-child {
+      border-bottom: none;
+    }
 
     .step-num {
       font-family: 'Bebas Neue', sans-serif;
@@ -584,7 +645,9 @@
       transition: color 0.3s;
     }
 
-    .step:hover .step-num { color: var(--accent); }
+    .step:hover .step-num {
+      color: var(--accent);
+    }
 
     .step-content h3 {
       font-family: 'DM Sans', sans-serif;
@@ -640,10 +703,23 @@
       gap: 0.6rem;
     }
 
-    .dot { width: 10px; height: 10px; border-radius: 50%; }
-    .dot-red { background: #ff5f56; }
-    .dot-yellow { background: #ffbd2e; }
-    .dot-green { background: #27c93f; }
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .dot-red {
+      background: #ff5f56;
+    }
+
+    .dot-yellow {
+      background: #ffbd2e;
+    }
+
+    .dot-green {
+      background: #27c93f;
+    }
 
     .demo-title {
       font-family: 'JetBrains Mono', monospace;
@@ -665,27 +741,34 @@
       background: #0a1520;
     }
 
-    .road-h, .road-v {
+    .road-h,
+    .road-v {
       position: absolute;
       background: #1a2030;
     }
 
     .road-h {
-      top: 50%; left: 0; right: 0;
+      top: 50%;
+      left: 0;
+      right: 0;
       height: 70px;
       transform: translateY(-50%);
     }
 
     .road-v {
-      left: 50%; top: 0; bottom: 0;
+      left: 50%;
+      top: 0;
+      bottom: 0;
       width: 70px;
       transform: translateX(-50%);
     }
 
     .inter-box {
       position: absolute;
-      top: 50%; left: 50%;
-      width: 70px; height: 70px;
+      top: 50%;
+      left: 50%;
+      width: 70px;
+      height: 70px;
       transform: translate(-50%, -50%);
       background: #1a2030;
       z-index: 2;
@@ -693,11 +776,22 @@
 
     .lane-line {
       position: absolute;
-      background: rgba(255,255,255,0.1);
+      background: rgba(255, 255, 255, 0.1);
     }
 
-    .lane-h { top: 50%; left: 0; right: 0; height: 1px; }
-    .lane-v { left: 50%; top: 0; bottom: 0; width: 1px; }
+    .lane-h {
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+    }
+
+    .lane-v {
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+    }
 
     /* Traffic lights in sim */
     .sim-light {
@@ -713,7 +807,8 @@
     }
 
     .sim-bulb {
-      width: 14px; height: 14px;
+      width: 14px;
+      height: 14px;
       border-radius: 50%;
       transition: all 0.4s;
     }
@@ -763,7 +858,8 @@
 
     input[type="range"]::-webkit-slider-thumb {
       -webkit-appearance: none;
-      width: 14px; height: 14px;
+      width: 14px;
+      height: 14px;
       border-radius: 50%;
       background: var(--accent);
       cursor: pointer;
@@ -785,8 +881,14 @@
       margin-top: 0.5rem;
     }
 
-    .btn-sim:hover { background: #00c9e0; }
-    .btn-sim.stop { background: var(--red); color: white; }
+    .btn-sim:hover {
+      background: #00c9e0;
+    }
+
+    .btn-sim.stop {
+      background: var(--red);
+      color: white;
+    }
 
     .metrics-grid {
       display: grid;
@@ -831,9 +933,17 @@
       line-height: 1.8;
     }
 
-    .status-log::-webkit-scrollbar { width: 4px; }
-    .status-log::-webkit-scrollbar-track { background: var(--deep); }
-    .status-log::-webkit-scrollbar-thumb { background: var(--border); }
+    .status-log::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .status-log::-webkit-scrollbar-track {
+      background: var(--deep);
+    }
+
+    .status-log::-webkit-scrollbar-thumb {
+      background: var(--border);
+    }
 
     /* ──── OUTCOMES ──── */
     #outcomes {
@@ -911,10 +1021,13 @@
       transition: all 0.3s;
     }
 
-    .team-card:hover { border-color: var(--accent); }
+    .team-card:hover {
+      border-color: var(--accent);
+    }
 
     .team-avatar {
-      width: 56px; height: 56px;
+      width: 56px;
+      height: 56px;
       border-radius: 50%;
       background: linear-gradient(135deg, var(--accent) 0%, #0066ff 100%);
       display: flex;
@@ -1009,7 +1122,9 @@
       color: var(--accent);
     }
 
-    .footer-logo span { color: var(--muted); }
+    .footer-logo span {
+      color: var(--muted);
+    }
 
     .footer-text {
       font-family: 'JetBrains Mono', monospace;
@@ -1029,8 +1144,15 @@
 
     /* ──── ANIMATIONS ──── */
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(24px); }
-      to   { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(24px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .reveal {
@@ -1046,33 +1168,68 @@
 
     /* ──── RESPONSIVE ──── */
     @media (max-width: 900px) {
-      nav { padding: 1rem 1.5rem; }
-      nav ul { display: none; }
-      .section-inner { padding: 4rem 1.5rem; }
+      nav {
+        padding: 1rem 1.5rem;
+      }
+
+      nav ul {
+        display: none;
+      }
+
+      .section-inner {
+        padding: 4rem 1.5rem;
+      }
+
       .problem-grid,
       .demo-container,
       .team-grid,
-      .future-list { grid-template-columns: 1fr; }
-      .outcomes-grid { grid-template-columns: 1fr; }
-      .arch-flow { gap: 0; flex-direction: column; align-items: center; }
-      .arch-arrow { width: 2px; height: 30px; background: linear-gradient(180deg, var(--border), var(--accent)); }
+      .future-list {
+        grid-template-columns: 1fr;
+      }
+
+      .outcomes-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .arch-flow {
+        gap: 0;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .arch-arrow {
+        width: 2px;
+        height: 30px;
+        background: linear-gradient(180deg, var(--border), var(--accent));
+      }
+
       .arch-arrow::after {
-        right: auto; top: auto;
-        bottom: -1px; left: -4px;
+        right: auto;
+        top: auto;
+        bottom: -1px;
+        left: -4px;
         border-left: 5px solid transparent;
         border-right: 5px solid transparent;
         border-top: 8px solid var(--accent);
       }
-      footer { flex-direction: column; text-align: center; }
-      .footer-inst { text-align: center; }
+
+      footer {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .footer-inst {
+        text-align: center;
+      }
     }
   </style>
 </head>
+
 <body>
 
   <!-- NAV -->
   <nav>
-    <a class="nav-logo" href="#hero">ITMS</a>
+    <a class="nav-logo" href="#hero">ITMS<span>.</span></a>
     <ul>
       <li><a href="#problem">Problem</a></li>
       <li><a href="#architecture">Architecture</a></li>
@@ -1081,12 +1238,12 @@
       <li><a href="#outcomes">Outcomes</a></li>
       <li><a href="#about">Team</a></li>
     </ul>
-    <span class="nav-badge">PBL-2 PROJECT</span>
+    <span class="nav-badge">PBL-I PROJECT</span>
   </nav>
 
   <!-- HERO -->
   <section id="hero">
-    <p class="hero-eyebrow">School of Computer Science &amp; Engineering — PBL 2 Synopsis</p>
+    <p class="hero-eyebrow">School of Computer Science &amp; Engineering — PBL I Synopsis</p>
     <h1 class="hero-title"><span class="highlight">INTELLIGENT</span><br>TRAFFIC</h1>
     <p class="hero-sub">Management System</p>
     <p class="hero-desc">
@@ -1141,9 +1298,13 @@
       <h2 class="section-title reveal">Urban Congestion<br><span class="dim">Demands Smart Response</span></h2>
       <div class="problem-grid">
         <div class="problem-text reveal">
-          <p>Traditional traffic signal systems operate on <strong>fixed timing cycles</strong>, completely blind to real-world traffic density. During rush hours, this causes massive queues, fuel waste, and emergency vehicle delays.</p>
-          <p>Urban populations are growing rapidly. <strong>India alone loses billions of rupees annually</strong> due to traffic congestion — reduced productivity, increased fuel consumption, and harmful emissions.</p>
-          <p>The solution demands a system that <strong>sees, thinks, and adapts</strong> — using computer vision and distributed decision-making to dynamically manage signal timings based on live traffic data.</p>
+          <p>Traditional traffic signal systems operate on <strong>fixed timing cycles</strong>, completely blind to
+            real-world traffic density. During rush hours, this causes massive queues, fuel waste, and emergency vehicle
+            delays.</p>
+          <p>Urban populations are growing rapidly. <strong>India alone loses billions of rupees annually</strong> due
+            to traffic congestion — reduced productivity, increased fuel consumption, and harmful emissions.</p>
+          <p>The solution demands a system that <strong>sees, thinks, and adapts</strong> — using computer vision and
+            distributed decision-making to dynamically manage signal timings based on live traffic data.</p>
         </div>
         <div class="congestion-vis reveal">
           <div class="road-container" id="road-vis"></div>
@@ -1159,7 +1320,8 @@
       <span class="section-tag reveal">02 — System Architecture</span>
       <h2 class="section-title reveal">Proposed<br><span class="dim">System Workflow</span></h2>
       <p class="reveal" style="color:var(--muted);max-width:600px;line-height:1.7;margin-bottom:1rem;">
-        Three tightly integrated modules form the backbone of ITMS — each feeding the next in a real-time pipeline from raw camera input to optimized signal timing.
+        Three tightly integrated modules form the backbone of ITMS — each feeding the next in a real-time pipeline from
+        raw camera input to optimized signal timing.
       </p>
       <div class="arch-flow reveal">
         <div class="arch-node">
@@ -1194,32 +1356,38 @@
         <div class="tech-card reveal" style="--card-accent: #3776ab;">
           <span class="tech-icon">🐍</span>
           <div class="tech-name">Python</div>
-          <p class="tech-desc">Core implementation language for all algorithms. Handles data processing, model application, and system orchestration.</p>
+          <p class="tech-desc">Core implementation language for all algorithms. Handles data processing, model
+            application, and system orchestration.</p>
         </div>
         <div class="tech-card reveal" style="--card-accent: #ff6b35;">
           <span class="tech-icon">👁️</span>
           <div class="tech-name">OpenCV</div>
-          <p class="tech-desc">Handles image processing tasks — frame capture from CCTV feeds, grayscale conversion, and image resizing.</p>
+          <p class="tech-desc">Handles image processing tasks — frame capture from CCTV feeds, grayscale conversion, and
+            image resizing.</p>
         </div>
         <div class="tech-card reveal" style="--card-accent: #00e5ff;">
           <span class="tech-icon">🔢</span>
           <div class="tech-name">NumPy</div>
-          <p class="tech-desc">Reshapes 2D images into 1D vectors suitable for PCA computation. Essential for matrix operations and data reshaping.</p>
+          <p class="tech-desc">Reshapes 2D images into 1D vectors suitable for PCA computation. Essential for matrix
+            operations and data reshaping.</p>
         </div>
         <div class="tech-card reveal" style="--card-accent: #39ff14;">
           <span class="tech-icon">⚙️</span>
           <div class="tech-name">Scikit-learn</div>
-          <p class="tech-desc">Machine learning library used to apply PCA, extract dominant features, and estimate traffic density from frames.</p>
+          <p class="tech-desc">Machine learning library used to apply PCA, extract dominant features, and estimate
+            traffic density from frames.</p>
         </div>
         <div class="tech-card reveal" style="--card-accent: #ffd700;">
           <span class="tech-icon">📊</span>
           <div class="tech-name">Matplotlib</div>
-          <p class="tech-desc">Visualizes processed grayscale images and PCA component breakdowns for analysis and debugging.</p>
+          <p class="tech-desc">Visualizes processed grayscale images and PCA component breakdowns for analysis and
+            debugging.</p>
         </div>
         <div class="tech-card reveal" style="--card-accent: #cc66ff;">
           <span class="tech-icon">🤝</span>
           <div class="tech-name">DCSP Framework</div>
-          <p class="tech-desc">Multi-agent system where each signal agent negotiates with peers using traffic density data to reach coordinated, optimal timing.</p>
+          <p class="tech-desc">Multi-agent system where each signal agent negotiates with peers using traffic density
+            data to reach coordinated, optimal timing.</p>
         </div>
       </div>
     </div>
@@ -1235,7 +1403,8 @@
           <div class="step-num">01</div>
           <div class="step-content">
             <h3>CCTV Frame Capture</h3>
-            <p>Live video feeds from intersection cameras are captured continuously. Frames are extracted at set intervals to balance accuracy with processing speed.</p>
+            <p>Live video feeds from intersection cameras are captured continuously. Frames are extracted at set
+              intervals to balance accuracy with processing speed.</p>
             <span class="step-tag" style="background:rgba(0,229,255,0.1);color:var(--accent);">OpenCV</span>
           </div>
         </div>
@@ -1243,7 +1412,8 @@
           <div class="step-num">02</div>
           <div class="step-content">
             <h3>Convert to Grayscale</h3>
-            <p>RGB color images are converted to single-channel grayscale to reduce data dimensionality and focus on structural features rather than color.</p>
+            <p>RGB color images are converted to single-channel grayscale to reduce data dimensionality and focus on
+              structural features rather than color.</p>
             <span class="step-tag" style="background:rgba(0,229,255,0.1);color:var(--accent);">OpenCV</span>
           </div>
         </div>
@@ -1251,7 +1421,8 @@
           <div class="step-num">03</div>
           <div class="step-content">
             <h3>Resize Image</h3>
-            <p>Images are standardized to a uniform resolution, ensuring consistent input dimensions for the PCA model across all camera feeds.</p>
+            <p>Images are standardized to a uniform resolution, ensuring consistent input dimensions for the PCA model
+              across all camera feeds.</p>
             <span class="step-tag" style="background:rgba(255,107,53,0.1);color:var(--accent2);">Preprocessing</span>
           </div>
         </div>
@@ -1259,7 +1430,8 @@
           <div class="step-num">04</div>
           <div class="step-content">
             <h3>Flatten to 1D Vector</h3>
-            <p>The 2D pixel matrix is flattened into a single 1D vector array, transforming image data into a format suitable for PCA analysis.</p>
+            <p>The 2D pixel matrix is flattened into a single 1D vector array, transforming image data into a format
+              suitable for PCA analysis.</p>
             <span class="step-tag" style="background:rgba(0,229,255,0.1);color:var(--accent);">NumPy</span>
           </div>
         </div>
@@ -1267,7 +1439,8 @@
           <div class="step-num">05</div>
           <div class="step-content">
             <h3>Apply PCA</h3>
-            <p>Principal Component Analysis is applied to decompose the flattened vectors, reducing high-dimensional image data into its most informative components.</p>
+            <p>Principal Component Analysis is applied to decompose the flattened vectors, reducing high-dimensional
+              image data into its most informative components.</p>
             <span class="step-tag" style="background:rgba(57,255,20,0.1);color:var(--accent3);">Scikit-learn</span>
           </div>
         </div>
@@ -1275,15 +1448,18 @@
           <div class="step-num">06</div>
           <div class="step-content">
             <h3>Extract Dominant Features</h3>
-            <p>Principal components that capture the most variance are selected. These represent the structural patterns most significant for vehicle detection.</p>
-            <span class="step-tag" style="background:rgba(57,255,20,0.1);color:var(--accent3);">Feature Extraction</span>
+            <p>Principal components that capture the most variance are selected. These represent the structural patterns
+              most significant for vehicle detection.</p>
+            <span class="step-tag" style="background:rgba(57,255,20,0.1);color:var(--accent3);">Feature
+              Extraction</span>
           </div>
         </div>
         <div class="step reveal">
           <div class="step-num">07</div>
           <div class="step-content">
             <h3>Estimate Traffic Density</h3>
-            <p>Extracted features are mapped to traffic density scores, which are fed to the DCSP decision engine for optimal signal timing adjustment.</p>
+            <p>Extracted features are mapped to traffic density scores, which are fed to the DCSP decision engine for
+              optimal signal timing adjustment.</p>
             <span class="step-tag" style="background:rgba(255,215,0,0.1);color:var(--yellow);">DCSP Input</span>
           </div>
         </div>
@@ -1297,7 +1473,8 @@
       <span class="section-tag reveal">05 — Interactive Demo</span>
       <h2 class="section-title reveal">Traffic Signal<br><span class="dim">Simulator</span></h2>
       <p class="reveal" style="color:var(--muted);max-width:540px;line-height:1.7;margin-bottom:0.5rem;">
-        Simulate an intelligent intersection. Adjust vehicle density and watch the system adapt signal timings in real time using DCSP logic.
+        Simulate an intelligent intersection. Adjust vehicle density and watch the system adapt signal timings in real
+        time using DCSP logic.
       </p>
       <div class="demo-container">
         <!-- Intersection Vis -->
@@ -1352,22 +1529,22 @@
             <div class="ctrl-panel">
               <div class="ctrl-row">
                 <span class="ctrl-label">NORTH DENSITY</span>
-                <input type="range" id="dn" min="1" max="10" value="5"/>
+                <input type="range" id="dn" min="1" max="10" value="5" />
                 <span class="ctrl-val" id="dn-val">5</span>
               </div>
               <div class="ctrl-row">
                 <span class="ctrl-label">SOUTH DENSITY</span>
-                <input type="range" id="ds" min="1" max="10" value="3"/>
+                <input type="range" id="ds" min="1" max="10" value="3" />
                 <span class="ctrl-val" id="ds-val">3</span>
               </div>
               <div class="ctrl-row">
                 <span class="ctrl-label">EAST DENSITY</span>
-                <input type="range" id="de" min="1" max="10" value="7"/>
+                <input type="range" id="de" min="1" max="10" value="7" />
                 <span class="ctrl-val" id="de-val">7</span>
               </div>
               <div class="ctrl-row">
                 <span class="ctrl-label">WEST DENSITY</span>
-                <input type="range" id="dw" min="1" max="10" value="2"/>
+                <input type="range" id="dw" min="1" max="10" value="2" />
                 <span class="ctrl-val" id="dw-val">2</span>
               </div>
               <button class="btn-sim" id="sim-btn" onclick="toggleSim()">▶ START SIMULATION</button>
@@ -1412,19 +1589,22 @@
           <span class="outcome-icon">⏱️</span>
           <span class="outcome-pct">40%</span>
           <div class="outcome-title">Reduced Wait Time</div>
-          <p class="outcome-desc">Adaptive timing significantly decreases vehicle wait times at intersections, improving the overall traffic flow.</p>
+          <p class="outcome-desc">Adaptive timing significantly decreases vehicle wait times at intersections, improving
+            the overall traffic flow.</p>
         </div>
         <div class="outcome-card reveal">
           <span class="outcome-icon">🟢</span>
           <span class="outcome-pct">↑</span>
           <div class="outcome-title">Dynamic Green Time</div>
-          <p class="outcome-desc">Green light durations are computed in real-time based on density data, eliminating wasted signal cycles.</p>
+          <p class="outcome-desc">Green light durations are computed in real-time based on density data, eliminating
+            wasted signal cycles.</p>
         </div>
         <div class="outcome-card reveal">
           <span class="outcome-icon">🏙️</span>
           <span class="outcome-pct">↓</span>
           <div class="outcome-title">Lower Congestion</div>
-          <p class="outcome-desc">Urban congestion is minimized during peak hours, enhancing travel times and reducing driver frustration.</p>
+          <p class="outcome-desc">Urban congestion is minimized during peak hours, enhancing travel times and reducing
+            driver frustration.</p>
         </div>
       </div>
     </div>
@@ -1453,8 +1633,9 @@
           </div>
         </div>
       </div>
-      <p class="reveal" style="margin-top:2rem;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:0.08em;">
-        SCHOOL OF COMPUTER SCIENCE AND ENGINEERING &nbsp;·&nbsp; PBL 2 PROJECT SYNOPSIS
+      <p class="reveal"
+        style="margin-top:2rem;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:0.08em;">
+        SCHOOL OF COMPUTER SCIENCE AND ENGINEERING &nbsp;·&nbsp; PBL-I PROJECT SYNOPSIS
       </p>
     </div>
   </section>
@@ -1467,16 +1648,23 @@
       <ul class="future-list">
         <li class="future-item reveal">
           <strong>Real-Time Simulation</strong>
-          <span>Implement a full real-time simulation of the proposed traffic control system to evaluate performance across various urban scenarios and traffic conditions.</span>
+          <span>Implement a full real-time simulation of the proposed traffic control system to evaluate performance
+            across various urban scenarios and traffic conditions.</span>
         </li>
-
+        <li class="future-item reveal">
+          <strong>YOLO vs PCA Comparison</strong>
+          <span>Conduct a rigorous comparative analysis between PCA-based and YOLO-based detection to assess accuracy,
+            speed, and efficiency in traffic management.</span>
+        </li>
         <li class="future-item reveal">
           <strong>IoT Integration</strong>
-          <span>Explore integration of IoT sensors alongside CCTV for richer, multi-source data collection and improved adaptability in real-world deployments.</span>
+          <span>Explore integration of IoT sensors alongside CCTV for richer, multi-source data collection and improved
+            adaptability in real-world deployments.</span>
         </li>
         <li class="future-item reveal">
           <strong>Emergency Vehicle Priority</strong>
-          <span>Extend the DCSP framework with emergency override protocols to detect and clear paths for ambulances, fire trucks, and police vehicles.</span>
+          <span>Extend the DCSP framework with emergency override protocols to detect and clear paths for ambulances,
+            fire trucks, and police vehicles.</span>
         </li>
       </ul>
     </div>
@@ -1487,7 +1675,7 @@
     <div class="footer-logo">ITMS<span>.</span></div>
     <div class="footer-text">
       Intelligent Traffic Management System Using CCTV &amp; Data Science<br>
-      <span style="color:var(--border)">PBL 2 Synopsis · 2024-25</span>
+      <span style="color:var(--border)">PBL-I Synopsis · 2024-25</span>
     </div>
     <div class="footer-inst">
       School of Computer Science and Engineering<br>
@@ -1500,9 +1688,9 @@
        HERO TRAFFIC LIGHT CYCLE
     ══════════════════════════════════════════ */
     const heroLights = [
-      { id: 'hero-red',    on: 'red-on',    off: 'red-off'    },
+      { id: 'hero-red', on: 'red-on', off: 'red-off' },
       { id: 'hero-yellow', on: 'yellow-on', off: 'yellow-off' },
-      { id: 'hero-green',  on: 'green-on',  off: 'green-off'  },
+      { id: 'hero-green', on: 'green-on', off: 'green-off' },
     ];
     let heroPhase = 0;
     const heroDurations = [3000, 1000, 3000];
@@ -1559,7 +1747,7 @@
         <div style="position:absolute;left:50%;top:0;bottom:0;width:50px;background:#1a1a2e;transform:translateX(-50%);border:1px solid var(--border)"></div>
         <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;background:#222233;transform:translate(-50%,-50%)"></div>
       `;
-      const colors = ['#ff6b35','#ffd700','#3776ab','#cc66ff','#ff3b3b','#39ff14'];
+      const colors = ['#ff6b35', '#ffd700', '#3776ab', '#cc66ff', '#ff3b3b', '#39ff14'];
       // horizontal cars
       for (let i = 0; i < 5; i++) {
         const car = document.createElement('div');
@@ -1567,8 +1755,8 @@
         const col = colors[i % colors.length];
         car.style.cssText = `
           width:18px;height:10px;background:${col};border-radius:3px;
-          top:calc(50% - 15px + ${(i%2)*14}px);
-          left:${5 + i*12}%;
+          top:calc(50% - 15px + ${(i % 2) * 14}px);
+          left:${5 + i * 12}%;
           animation: none;
           opacity:0.85;
         `;
@@ -1577,11 +1765,11 @@
       for (let i = 0; i < 4; i++) {
         const car = document.createElement('div');
         car.className = 'sim-car';
-        const col = colors[(i+2) % colors.length];
+        const col = colors[(i + 2) % colors.length];
         car.style.cssText = `
           width:10px;height:18px;background:${col};border-radius:3px;
-          left:calc(50% - 13px + ${(i%2)*16}px);
-          top:${5 + i*14}%;
+          left:calc(50% - 13px + ${(i % 2) * 16}px);
+          top:${5 + i * 14}%;
           opacity:0.85;
         `;
         vis.appendChild(car);
@@ -1591,7 +1779,7 @@
     /* ══════════════════════════════════════════
        SLIDER SYNC
     ══════════════════════════════════════════ */
-    ['dn','ds','de','dw'].forEach(id => {
+    ['dn', 'ds', 'de', 'dw'].forEach(id => {
       const slider = document.getElementById(id);
       const val = document.getElementById(id + '-val');
       slider.addEventListener('input', () => { val.textContent = slider.value; });
@@ -1603,14 +1791,14 @@
     let simRunning = false;
     let simTimeout = null;
     let cycleCount = 0;
-    const directions = ['N','S','E','W'];
-    const dirNames = { N:'NORTH', S:'SOUTH', E:'EAST', W:'WEST' };
-    const sliderIds = { N:'dn', S:'ds', E:'de', W:'dw' };
+    const directions = ['N', 'S', 'E', 'W'];
+    const dirNames = { N: 'NORTH', S: 'SOUTH', E: 'EAST', W: 'WEST' };
+    const sliderIds = { N: 'dn', S: 'ds', E: 'de', W: 'dw' };
     const lights = {
-      N: { r:'sn-r', y:'sn-y', g:'sn-g' },
-      S: { r:'ss-r', y:'ss-y', g:'ss-g' },
-      E: { r:'se-r', y:'se-y', g:'se-g' },
-      W: { r:'sw-r', y:'sw-y', g:'sw-g' },
+      N: { r: 'sn-r', y: 'sn-y', g: 'sn-g' },
+      S: { r: 'ss-r', y: 'ss-y', g: 'ss-g' },
+      E: { r: 'se-r', y: 'se-y', g: 'se-g' },
+      W: { r: 'sw-r', y: 'sw-y', g: 'sw-g' },
     };
 
     function setLight(dir, color) {
@@ -1618,12 +1806,12 @@
       const rEl = document.getElementById(l.r);
       const yEl = document.getElementById(l.y);
       const gEl = document.getElementById(l.g);
-      rEl.style.background = color === 'red'    ? 'var(--red)'    : '#3d0a0a';
-      rEl.style.boxShadow  = color === 'red'    ? '0 0 10px var(--red)' : 'none';
+      rEl.style.background = color === 'red' ? 'var(--red)' : '#3d0a0a';
+      rEl.style.boxShadow = color === 'red' ? '0 0 10px var(--red)' : 'none';
       yEl.style.background = color === 'yellow' ? 'var(--yellow)' : '#3d300a';
-      yEl.style.boxShadow  = color === 'yellow' ? '0 0 10px var(--yellow)' : 'none';
-      gEl.style.background = color === 'green'  ? 'var(--green)'  : '#0a3d0a';
-      gEl.style.boxShadow  = color === 'green'  ? '0 0 10px var(--green)' : 'none';
+      yEl.style.boxShadow = color === 'yellow' ? '0 0 10px var(--yellow)' : 'none';
+      gEl.style.background = color === 'green' ? 'var(--green)' : '#0a3d0a';
+      gEl.style.boxShadow = color === 'green' ? '0 0 10px var(--green)' : 'none';
     }
 
     function allRed() {
@@ -1633,7 +1821,7 @@
     function log(msg, color = 'var(--accent3)') {
       const el = document.getElementById('status-log');
       const line = document.createElement('div');
-      const ts = new Date().toLocaleTimeString('en-IN', {hour12:false});
+      const ts = new Date().toLocaleTimeString('en-IN', { hour12: false });
       line.style.color = color;
       line.textContent = `[${ts}] ${msg}`;
       el.appendChild(line);
@@ -1716,4 +1904,5 @@
     }
   </script>
 </body>
+
 </html>
