@@ -248,8 +248,8 @@
   <!-- HERO -->
   <section id="hero">
     <p class="hero-eyebrow">School of Computer Science &amp; Engineering — PBL 2 Synopsis</p>
-    <h1 class="hero-title"><span class="highlight">INTELLIGENT</span><br>TRAFFIC</h1>
-    <p class="hero-sub">Management System</p>
+    <h1 class="hero-title"><span class="highlight">SMART</span><br>TRAFFIC</h1>
+    <p class="hero-sub">Light System</p>
     <p class="hero-desc">
       Leveraging <strong>CCTV cameras</strong>, <strong>Principal Component Analysis (PCA)</strong>, and
       <strong>Distributed Constraint Satisfaction Problems (DCSP)</strong> to build adaptive, real-time
@@ -501,31 +501,6 @@
     </div>
   </section>
 
-  <!-- ABOUT -->
-  <section id="about">
-    <div class="section-inner">
-      <span class="section-tag reveal">07 — The Team</span>
-      <h2 class="section-title reveal">Project <span class="dim">Members</span></h2>
-      <div class="team-grid">
-        <div class="team-card reveal">
-          <div class="team-avatar">DA</div>
-          <div class="team-info">
-            <h3>Devank Dharmendra Agrawal</h3>
-            <div class="team-role">Lead Developer &amp; Researcher</div>
-            <div class="team-id">Enrollment: 2427030447</div>
-          </div>
-        </div>
-        <div class="team-card reveal">
-          <div class="team-avatar" style="background:linear-gradient(135deg,var(--accent2),#ff003c)">MK</div>
-          <div class="team-info">
-            <h3>Dr. Mohit Kushwaha</h3>
-            <div class="team-role" style="color:var(--accent2)">Project Supervisor</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- FUTURE -->
   <section id="future">
     <div class="section-inner">
@@ -550,9 +525,9 @@
   </footer>
 
   <script>
-    /* ══════════════════════════════════════════
-       HERO TRAFFIC LIGHT CYCLE
-    ══════════════════════════════════════════ */
+    
+  // HERO TRAFFIC LIGHT CYCLE
+
     const heroLights = [
       { id: 'hero-red',    on: 'red-on',    off: 'red-off'    },
       { id: 'hero-yellow', on: 'yellow-on', off: 'yellow-off' },
@@ -569,17 +544,15 @@
     }
     cycleHeroLight();
 
-    /* ══════════════════════════════════════════
-       SCROLL REVEAL
-    ══════════════════════════════════════════ */
+
+   //    SCROLL REVEAL
     const observer = new IntersectionObserver(entries => {
       entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
     }, { threshold: 0.15 });
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-    /* ══════════════════════════════════════════
-       ANIMATED COUNTERS
-    ══════════════════════════════════════════ */
+//       ANIMATED COUNTERS
+
     const counters = document.querySelectorAll('[data-target]');
     const cObs = new IntersectionObserver(entries => {
       entries.forEach(e => {
@@ -598,9 +571,8 @@
     }, { threshold: 0.5 });
     counters.forEach(c => cObs.observe(c));
 
-    /* ══════════════════════════════════════════
-       ROAD VIS — Congestion Display
-    ══════════════════════════════════════════ */
+      // ROAD VIS — Congestion Display
+  
     (function buildRoadVis() {
       const vis = document.getElementById('road-vis');
       vis.innerHTML = `
@@ -623,18 +595,17 @@
       }
     })();
 
-    /* ══════════════════════════════════════════
-       SLIDER SYNC
-    ══════════════════════════════════════════ */
+
+  //     SLIDER SYNC
+
     ['dn','ds','de','dw'].forEach(id => {
       const slider = document.getElementById(id);
       const val = document.getElementById(id + '-val');
       slider.addEventListener('input', () => { val.textContent = slider.value; });
     });
 
-    /* ══════════════════════════════════════════
-       SIMULATION ENGINE
-    ══════════════════════════════════════════ */
+       //SIMULATION ENGINE
+ 
     let simRunning = false;
     let simTimeout = null;
     let simInterval = null;
@@ -725,8 +696,8 @@
       }
       lastActive = active;
 
-      const MIN_GREEN  = 5;   // every road gets at least 5s even at zero density
-      const MAX_GREEN  = 20;  // no road holds green longer than 20s
+      const MIN_GREEN  = 5;  
+      const MAX_GREEN  = 20; 
       const rawTime    = Math.round(MIN_GREEN + densities[active] * 1.5);
       const greenTime  = Math.min(Math.max(rawTime, MIN_GREEN), MAX_GREEN);
       const fixedGreen = 10;
