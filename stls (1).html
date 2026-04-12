@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>STLS — Smart traffic light System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&family=JetBrains+Mono:wght@400;700&display=swap"
+    rel="stylesheet" />
+  <style>
+    :root {
+      --black: #080c10;
+      --deep: #0d1117;
+      --panel: #111820;
+      --border: #1e2d3d;
+      --accent: #00e5ff;
+      --accent2: #ff6b35;
+      --accent3: #39ff14;
+      --text: #c9d1d9;
+      --muted: #566573;
+      --white: #f0f6fc;
+      --red: #ff3b3b;
+      --yellow: #ffd700;
+      --green: #39ff14;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--black); color: var(--text); font-family: 'DM Sans', sans-serif; overflow-x: hidden; }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 3rem;
+      background: rgba(8,12,16,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 0.15em; color: var(--accent); text-decoration: none; }
+    .nav-logo span { color: var(--white); }
+    nav ul { display: flex; gap: 2.5rem; list-style: none; }
+    nav ul a { text-decoration: none; color: var(--muted); font-size: 0.85rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; transition: color 0.2s; }
+    nav ul a:hover { color: var(--accent); }
+    .nav-badge { background: var(--accent); color: var(--black); font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 700; padding: 0.35rem 0.8rem; border-radius: 2px; letter-spacing: 0.1em; }
+
+    #hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 8rem 2rem 4rem; position: relative; z-index: 1; }
+    .hero-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; letter-spacing: 0.3em; color: var(--accent); text-transform: uppercase; margin-bottom: 1.5rem; opacity: 0; animation: fadeUp 0.8s 0.2s forwards; }
+    .hero-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(4rem,12vw,10rem); line-height: 0.9; letter-spacing: 0.04em; color: var(--white); margin-bottom: 0.4rem; opacity: 0; animation: fadeUp 0.8s 0.4s forwards; }
+    .hero-title .highlight { color: var(--accent); }
+    .hero-sub { font-family: 'Bebas Neue', sans-serif; font-size: clamp(1.8rem,5vw,4rem); letter-spacing: 0.12em; color: var(--muted); margin-bottom: 2rem; opacity: 0; animation: fadeUp 0.8s 0.5s forwards; }
+    .hero-desc { max-width: 600px; font-size: 1rem; line-height: 1.7; color: var(--muted); margin-bottom: 3rem; opacity: 0; animation: fadeUp 0.8s 0.6s forwards; }
+    .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; opacity: 0; animation: fadeUp 0.8s 0.8s forwards; }
+    .btn { padding: 0.9rem 2.2rem; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; cursor: pointer; border: none; transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.6rem; }
+    .btn-primary { background: var(--accent); color: var(--black); }
+    .btn-primary:hover { background: #00c9e0; transform: translateY(-2px); }
+    .btn-ghost { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+    .btn-ghost:hover { background: rgba(0,229,255,0.08); transform: translateY(-2px); }
+
+    .traffic-scene { position: relative; margin: 3rem auto 0; opacity: 0; animation: fadeUp 1s 1s forwards; }
+    .traffic-pole { display: inline-flex; flex-direction: column; align-items: center; gap: 0; }
+    .traffic-box { background: #0d1117; border: 2px solid #1e2d3d; border-radius: 12px; padding: 12px 10px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 0 40px rgba(0,0,0,0.8), inset 0 0 20px rgba(0,0,0,0.5); }
+    .light-bulb { width: 44px; height: 44px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.05); position: relative; transition: all 0.4s; }
+    .light-bulb.red-off { background: #3d0a0a; }
+    .light-bulb.yellow-off { background: #3d300a; }
+    .light-bulb.green-off { background: #0a3d0a; }
+    .light-bulb.red-on { background: var(--red); box-shadow: 0 0 20px var(--red), 0 0 40px rgba(255,59,59,0.4); }
+    .light-bulb.yellow-on { background: var(--yellow); box-shadow: 0 0 20px var(--yellow), 0 0 40px rgba(255,215,0,0.4); }
+    .light-bulb.green-on { background: var(--green); box-shadow: 0 0 20px var(--green), 0 0 40px rgba(57,255,20,0.4); }
+    .pole-stem { width: 6px; height: 40px; background: linear-gradient(to bottom, #1e2d3d, #0d1117); }
+    .pole-base { width: 40px; height: 8px; background: #1e2d3d; border-radius: 4px; }
+
+    .stats-bar { position: relative; z-index: 1; background: var(--panel); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 2rem 0; overflow: hidden; }
+    .stats-inner { display: flex; justify-content: center; gap: 4rem; flex-wrap: wrap; padding: 0 3rem; }
+    .stat-item { text-align: center; }
+    .stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; color: var(--accent); line-height: 1; display: block; }
+    .stat-label { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; }
+
+    section { position: relative; z-index: 1; }
+    .section-inner { max-width: 1200px; margin: 0 auto; padding: 6rem 3rem; }
+    .section-tag { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--accent); letter-spacing: 0.3em; text-transform: uppercase; display: block; margin-bottom: 0.8rem; }
+    .section-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.5rem,6vw,5rem); letter-spacing: 0.05em; color: var(--white); line-height: 1; margin-bottom: 1.5rem; }
+    .section-title .dim { color: var(--muted); }
+
+    #problem { background: linear-gradient(180deg, var(--black) 0%, var(--deep) 100%); }
+    .problem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-top: 3rem; }
+    .problem-text p { font-size: 1rem; line-height: 1.8; color: var(--muted); margin-bottom: 1.2rem; }
+    .problem-text p strong { color: var(--text); }
+    .congestion-vis { background: var(--panel); border: 1px solid var(--border); border-radius: 4px; padding: 2rem; position: relative; overflow: hidden; }
+    .road-container { position: relative; height: 200px; }
+    .vis-label { position: absolute; bottom: 0.5rem; left: 1rem; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); letter-spacing: 0.1em; }
+
+    #architecture { background: var(--deep); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .arch-flow { display: flex; align-items: center; justify-content: center; gap: 0; margin-top: 4rem; flex-wrap: wrap; }
+    .arch-node { background: var(--panel); border: 1px solid var(--border); padding: 1.5rem 1.2rem; text-align: center; width: 140px; position: relative; transition: border-color 0.3s, transform 0.3s; cursor: default; }
+    .arch-node:hover { border-color: var(--accent); transform: translateY(-4px); }
+    .arch-node:hover .node-icon { color: var(--accent); }
+    .node-icon { font-size: 2rem; display: block; margin-bottom: 0.7rem; transition: color 0.3s; color: var(--muted); }
+    .node-label { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 0.1em; color: var(--text); text-transform: uppercase; line-height: 1.4; }
+    .arch-arrow { width: 40px; height: 2px; background: linear-gradient(90deg, var(--border), var(--accent)); position: relative; flex-shrink: 0; }
+    .arch-arrow::after { content: ''; position: absolute; right: -1px; top: -4px; border-left: 8px solid var(--accent); border-top: 5px solid transparent; border-bottom: 5px solid transparent; }
+
+    #tech { background: var(--black); }
+    .tech-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
+    .tech-card { background: var(--panel); border: 1px solid var(--border); padding: 1.8rem; border-radius: 2px; transition: all 0.3s; position: relative; overflow: hidden; }
+    .tech-card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 0; background: var(--card-accent, var(--accent)); transition: height 0.4s; }
+    .tech-card:hover::before { height: 100%; }
+    .tech-card:hover { border-color: var(--card-accent, var(--accent)); transform: translateY(-3px); }
+    .tech-icon { font-size: 2.2rem; display: block; margin-bottom: 1rem; }
+    .tech-name { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; font-weight: 700; color: var(--card-accent, var(--accent)); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
+    .tech-desc { font-size: 0.9rem; line-height: 1.6; color: var(--muted); }
+
+    #workflow { background: var(--deep); border-top: 1px solid var(--border); }
+    .workflow-steps { display: flex; flex-direction: column; gap: 0; margin-top: 3rem; max-width: 750px; }
+    .step { display: flex; gap: 2rem; align-items: flex-start; padding: 2rem 0; border-bottom: 1px solid var(--border); position: relative; }
+    .step:last-child { border-bottom: none; }
+    .step-num { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; color: var(--border); line-height: 1; flex-shrink: 0; width: 60px; text-align: center; transition: color 0.3s; }
+    .step:hover .step-num { color: var(--accent); }
+    .step-content h3 { font-family: 'DM Sans', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+    .step-content p { font-size: 0.9rem; line-height: 1.7; color: var(--muted); }
+    .step-tag { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; padding: 0.2rem 0.6rem; border-radius: 2px; margin-top: 0.6rem; letter-spacing: 0.1em; }
+
+    #demo { background: var(--black); border-top: 1px solid var(--border); }
+    .demo-container { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-top: 3rem; align-items: start; }
+    .demo-panel { background: var(--panel); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+    .demo-header { background: var(--deep); border-bottom: 1px solid var(--border); padding: 0.8rem 1.2rem; display: flex; align-items: center; gap: 0.6rem; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot-red { background: #ff5f56; }
+    .dot-yellow { background: #ffbd2e; }
+    .dot-green { background: #27c93f; }
+    .demo-title { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted); letter-spacing: 0.1em; margin-left: 0.5rem; }
+    .demo-body { padding: 1.5rem; }
+
+    .intersection-sim { position: relative; width: 100%; height: 300px; background: #0a1520; }
+    .road-h, .road-v { position: absolute; background: #1a2030; }
+    .road-h { top: 50%; left: 0; right: 0; height: 70px; transform: translateY(-50%); }
+    .road-v { left: 50%; top: 0; bottom: 0; width: 70px; transform: translateX(-50%); }
+    .inter-box { position: absolute; top: 50%; left: 50%; width: 70px; height: 70px; transform: translate(-50%,-50%); background: #1a2030; z-index: 2; }
+    .lane-line { position: absolute; background: rgba(255,255,255,0.1); }
+    .lane-h { top: 50%; left: 0; right: 0; height: 1px; }
+    .lane-v { left: 50%; top: 0; bottom: 0; width: 1px; }
+
+    .sim-light { position: absolute; z-index: 5; display: flex; flex-direction: column; gap: 4px; background: #0d1117; border: 1px solid var(--border); border-radius: 6px; padding: 5px 4px; }
+    .sim-bulb { width: 14px; height: 14px; border-radius: 50%; transition: all 0.4s; }
+    .sim-car { position: absolute; border-radius: 3px; z-index: 3; transition: transform 0.05s linear; }
+
+    .ctrl-panel { display: flex; flex-direction: column; gap: 1rem; }
+    .ctrl-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    .ctrl-label { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--muted); letter-spacing: 0.08em; }
+    .ctrl-val { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: var(--accent); }
+    input[type="range"] { -webkit-appearance: none; width: 120px; height: 3px; background: var(--border); outline: none; }
+    input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); cursor: pointer; }
+
+    .btn-sim { padding: 0.7rem 1.5rem; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; background: var(--accent); color: var(--black); border: none; cursor: pointer; transition: all 0.2s; width: 100%; margin-top: 0.5rem; }
+    .btn-sim:hover { background: #00c9e0; }
+    .btn-sim.stop { background: var(--red); color: white; }
+
+    .metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-top: 0.5rem; }
+    .metric-box { background: var(--deep); border: 1px solid var(--border); padding: 0.8rem; }
+    .metric-box .m-val { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: var(--accent3); line-height: 1; display: block; }
+    .metric-box .m-label { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+
+    .status-log { background: var(--deep); border: 1px solid var(--border); border-radius: 2px; padding: 1rem; height: 120px; overflow-y: auto; margin-top: 1rem; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--accent3); line-height: 1.8; }
+    .status-log::-webkit-scrollbar { width: 4px; }
+    .status-log::-webkit-scrollbar-track { background: var(--deep); }
+    .status-log::-webkit-scrollbar-thumb { background: var(--border); }
+
+    #outcomes { background: var(--deep); border-top: 1px solid var(--border); }
+    .outcomes-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; margin-top: 3rem; }
+    .outcome-card { background: var(--panel); border: 1px solid var(--border); padding: 2.5rem 1.8rem; text-align: center; transition: all 0.3s; }
+    .outcome-card:hover { border-color: var(--accent2); transform: translateY(-4px); }
+    .outcome-icon { font-size: 2.5rem; display: block; margin-bottom: 1rem; }
+    .outcome-pct { font-family: 'Bebas Neue', sans-serif; font-size: 4rem; color: var(--accent2); line-height: 1; display: block; }
+    .outcome-title { font-size: 1rem; font-weight: 700; color: var(--white); margin: 0.5rem 0; }
+    .outcome-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+
+    #about { background: var(--black); border-top: 1px solid var(--border); }
+    .team-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 3rem; }
+    .team-card { background: var(--panel); border: 1px solid var(--border); padding: 2rem; display: flex; gap: 1.5rem; align-items: flex-start; transition: all 0.3s; }
+    .team-card:hover { border-color: var(--accent); }
+    .team-avatar { width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, var(--accent) 0%, #0066ff 100%); display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; color: var(--black); flex-shrink: 0; }
+    .team-info h3 { font-size: 1rem; font-weight: 700; color: var(--white); margin-bottom: 0.2rem; }
+    .team-role { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase; }
+    .team-id { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted); margin-top: 0.3rem; }
+
+    #future { background: var(--deep); border-top: 1px solid var(--border); }
+    .future-list { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 3rem; list-style: none; }
+    .future-item { background: var(--panel); border: 1px solid var(--border); border-left: 3px solid var(--accent); padding: 1.2rem 1.5rem; transition: all 0.3s; }
+    .future-item:hover { border-color: var(--accent); transform: translateX(4px); }
+    .future-item strong { display: block; font-size: 0.9rem; color: var(--white); margin-bottom: 0.3rem; }
+    .future-item span { font-size: 0.82rem; color: var(--muted); line-height: 1.6; }
+
+    footer { position: relative; z-index: 1; background: var(--panel); border-top: 1px solid var(--border); padding: 3rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+    .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 0.15em; color: var(--accent); }
+    .footer-logo span { color: var(--muted); }
+    .footer-text { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted); letter-spacing: 0.08em; text-align: center; }
+    .footer-inst { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted); text-align: right; line-height: 1.6; }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+    .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s, transform 0.7s; }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    @media (max-width: 900px) {
+      nav { padding: 1rem 1.5rem; }
+      nav ul { display: none; }
+      .section-inner { padding: 4rem 1.5rem; }
+      .problem-grid, .demo-container, .team-grid, .future-list { grid-template-columns: 1fr; }
+      .outcomes-grid { grid-template-columns: 1fr; }
+      .arch-flow { gap: 0; flex-direction: column; align-items: center; }
+      .arch-arrow { width: 2px; height: 30px; background: linear-gradient(180deg, var(--border), var(--accent)); }
+      .arch-arrow::after { right: auto; top: auto; bottom: -1px; left: -4px; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 8px solid var(--accent); }
+      footer { flex-direction: column; text-align: center; }
+      .footer-inst { text-align: center; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="#hero">STLS</a>
+    <ul>
+      <li><a href="#problem">Problem</a></li>
+      <li><a href="#architecture">Architecture</a></li>
+      <li><a href="#tech">Technology</a></li>
+      <li><a href="#demo">Live Demo</a></li>
+      <li><a href="#outcomes">Outcomes</a></li>
+      <li><a href="#about">Team</a></li>
+    </ul>
+    <span class="nav-badge">PBL 2 PROJECT</span>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <p class="hero-eyebrow">School of Computer Science &amp; Engineering — PBL 2 Synopsis</p>
+    <h1 class="hero-title"><span class="highlight">INTELLIGENT</span><br>TRAFFIC</h1>
+    <p class="hero-sub">Management System</p>
+    <p class="hero-desc">
+      Leveraging <strong>CCTV cameras</strong>, <strong>Principal Component Analysis (PCA)</strong>, and
+      <strong>Distributed Constraint Satisfaction Problems (DCSP)</strong> to build adaptive, real-time
+      traffic signal control for smarter urban mobility.
+    </p>
+    <div class="hero-actions">
+      <a href="#demo" class="btn btn-primary">▶ Live Simulation</a>
+      <a href="#architecture" class="btn btn-ghost">Explore Architecture →</a>
+    </div>
+    <div class="traffic-scene">
+      <div class="traffic-pole">
+        <div class="traffic-box">
+          <div class="light-bulb red-on" id="hero-red"></div>
+          <div class="light-bulb yellow-off" id="hero-yellow"></div>
+          <div class="light-bulb green-off" id="hero-green"></div>
+        </div>
+        <div class="pole-stem"></div>
+        <div class="pole-base"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="stats-inner">
+      <div class="stat-item reveal">
+        <span class="stat-num" data-target="40">0</span>
+        <span class="stat-label">% Wait Time Reduction</span>
+      </div>
+      <div class="stat-item reveal">
+        <span class="stat-num" data-target="7">0</span>
+        <span class="stat-label">PCA Workflow Stages</span>
+      </div>
+      <div class="stat-item reveal">
+        <span class="stat-num" data-target="3">0</span>
+        <span class="stat-label">Core Modules</span>
+      </div>
+      <div class="stat-item reveal">
+        <span class="stat-num" data-target="4">0</span>
+        <span class="stat-label">Libraries Used</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROBLEM -->
+  <section id="problem">
+    <div class="section-inner">
+      <span class="section-tag reveal">01 — The Problem</span>
+      <h2 class="section-title reveal">Urban Congestion<br><span class="dim">Demands Smart Response</span></h2>
+      <div class="problem-grid">
+        <div class="problem-text reveal">
+          <p>Traditional traffic signal systems operate on <strong>fixed timing cycles</strong>, completely blind to real-world traffic density. During rush hours, this causes massive queues, fuel waste, and emergency vehicle delays.</p>
+          <p>Urban populations are growing rapidly. <strong>India alone loses billions of rupees annually</strong> due to traffic congestion — reduced productivity, increased fuel consumption, and harmful emissions.</p>
+          <p>The solution demands a system that <strong>sees, thinks, and adapts</strong> — using computer vision and distributed decision-making to dynamically manage signal timings based on live traffic data.</p>
+        </div>
+        <div class="congestion-vis reveal">
+          <div class="road-container" id="road-vis"></div>
+          <span class="vis-label" id="vis-label">● TRADITIONAL SYSTEM — FIXED TIMING</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ARCHITECTURE -->
+  <section id="architecture">
+    <div class="section-inner">
+      <span class="section-tag reveal">02 — System Architecture</span>
+      <h2 class="section-title reveal">Proposed<br><span class="dim">System Workflow</span></h2>
+      <p class="reveal" style="color:var(--muted);max-width:600px;line-height:1.7;margin-bottom:1rem;">
+        Three tightly integrated modules form the backbone of STLS — each feeding the next in a real-time pipeline from raw camera input to optimized signal timing.
+      </p>
+      <div class="arch-flow reveal">
+        <div class="arch-node"><span class="node-icon">📷</span><div class="node-label">Input Module<br>CCTV Capture</div></div>
+        <div class="arch-arrow"></div>
+        <div class="arch-node"><span class="node-icon">🔍</span><div class="node-label">Detection<br>PCA Algorithm</div></div>
+        <div class="arch-arrow"></div>
+        <div class="arch-node"><span class="node-icon">🧠</span><div class="node-label">Decision Engine<br>DCSP Multi-Agent</div></div>
+        <div class="arch-arrow"></div>
+        <div class="arch-node"><span class="node-icon">🚦</span><div class="node-label">Signal Output<br>Adaptive Timing</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TECH -->
+  <section id="tech">
+    <div class="section-inner">
+      <span class="section-tag reveal">03 — Technology Stack</span>
+      <h2 class="section-title reveal">Tools &amp; <span class="dim">Libraries</span></h2>
+      <div class="tech-grid">
+        <div class="tech-card reveal" style="--card-accent:#3776ab;"><span class="tech-icon">🐍</span><div class="tech-name">Python</div><p class="tech-desc">Core implementation language for all algorithms. Handles data processing, model application, and system orchestration.</p></div>
+        <div class="tech-card reveal" style="--card-accent:#ff6b35;"><span class="tech-icon">👁️</span><div class="tech-name">OpenCV</div><p class="tech-desc">Handles image processing tasks — frame capture from CCTV feeds, grayscale conversion, and image resizing.</p></div>
+        <div class="tech-card reveal" style="--card-accent:#00e5ff;"><span class="tech-icon">🔢</span><div class="tech-name">NumPy</div><p class="tech-desc">Reshapes 2D images into 1D vectors suitable for PCA computation. Essential for matrix operations and data reshaping.</p></div>
+        <div class="tech-card reveal" style="--card-accent:#39ff14;"><span class="tech-icon">⚙️</span><div class="tech-name">Scikit-learn</div><p class="tech-desc">Machine learning library used to apply PCA, extract dominant features, and estimate traffic density from frames.</p></div>
+        <div class="tech-card reveal" style="--card-accent:#ffd700;"><span class="tech-icon">📊</span><div class="tech-name">Matplotlib</div><p class="tech-desc">Visualizes processed grayscale images and PCA component breakdowns for analysis and debugging.</p></div>
+        <div class="tech-card reveal" style="--card-accent:#cc66ff;"><span class="tech-icon">🤝</span><div class="tech-name">DCSP Framework</div><p class="tech-desc">Multi-agent system where each signal agent negotiates with peers using traffic density data to reach coordinated, optimal timing.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORKFLOW -->
+  <section id="workflow">
+    <div class="section-inner">
+      <span class="section-tag reveal">04 — PCA Pipeline</span>
+      <h2 class="section-title reveal">7-Stage<br><span class="dim">Processing Workflow</span></h2>
+      <div class="workflow-steps">
+        <div class="step reveal"><div class="step-num">01</div><div class="step-content"><h3>CCTV Frame Capture</h3><p>Live video feeds from intersection cameras are captured continuously. Frames are extracted at set intervals to balance accuracy with processing speed.</p><span class="step-tag" style="background:rgba(0,229,255,0.1);color:var(--accent);">OpenCV</span></div></div>
+        <div class="step reveal"><div class="step-num">02</div><div class="step-content"><h3>Convert to Grayscale</h3><p>RGB color images are converted to single-channel grayscale to reduce data dimensionality and focus on structural features rather than color.</p><span class="step-tag" style="background:rgba(0,229,255,0.1);color:var(--accent);">OpenCV</span></div></div>
+        <div class="step reveal"><div class="step-num">03</div><div class="step-content"><h3>Resize Image</h3><p>Images are standardized to a uniform resolution, ensuring consistent input dimensions for the PCA model across all camera feeds.</p><span class="step-tag" style="background:rgba(255,107,53,0.1);color:var(--accent2);">Preprocessing</span></div></div>
+        <div class="step reveal"><div class="step-num">04</div><div class="step-content"><h3>Flatten to 1D Vector</h3><p>The 2D pixel matrix is flattened into a single 1D vector array, transforming image data into a format suitable for PCA analysis.</p><span class="step-tag" style="background:rgba(0,229,255,0.1);color:var(--accent);">NumPy</span></div></div>
+        <div class="step reveal"><div class="step-num">05</div><div class="step-content"><h3>Apply PCA</h3><p>Principal Component Analysis is applied to decompose the flattened vectors, reducing high-dimensional image data into its most informative components.</p><span class="step-tag" style="background:rgba(57,255,20,0.1);color:var(--accent3);">Scikit-learn</span></div></div>
+        <div class="step reveal"><div class="step-num">06</div><div class="step-content"><h3>Extract Dominant Features</h3><p>Principal components that capture the most variance are selected. These represent the structural patterns most significant for vehicle detection.</p><span class="step-tag" style="background:rgba(57,255,20,0.1);color:var(--accent3);">Feature Extraction</span></div></div>
+        <div class="step reveal"><div class="step-num">07</div><div class="step-content"><h3>Estimate Traffic Density</h3><p>Extracted features are mapped to traffic density scores, which are fed to the DCSP decision engine for optimal signal timing adjustment.</p><span class="step-tag" style="background:rgba(255,215,0,0.1);color:var(--yellow);">DCSP Input</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIVE DEMO -->
+  <section id="demo">
+    <div class="section-inner">
+      <span class="section-tag reveal">05 — Interactive Demo</span>
+      <h2 class="section-title reveal">Traffic Signal<br><span class="dim">Simulator</span></h2>
+      <p class="reveal" style="color:var(--muted);max-width:540px;line-height:1.7;margin-bottom:0.5rem;">
+        Simulate an intelligent intersection. Adjust vehicle density and watch the system adapt signal timings in real time using DCSP logic.
+      </p>
+      <div class="demo-container">
+        <!-- Intersection Vis -->
+        <div class="demo-panel reveal">
+          <div class="demo-header">
+            <div class="dot dot-red"></div>
+            <div class="dot dot-yellow"></div>
+            <div class="dot dot-green"></div>
+            <span class="demo-title">intersection_simulation.py</span>
+          </div>
+          <div class="intersection-sim" id="sim-canvas">
+            <div class="road-h"><div class="lane-line lane-h"></div></div>
+            <div class="road-v"><div class="lane-line lane-v"></div></div>
+            <div class="inter-box"></div>
+            <!-- Traffic lights -->
+            <div class="sim-light" style="top:28%;left:52%;transform:translate(-50%,-50%)" id="sl-north">
+              <div class="sim-bulb" id="sn-r" style="background:#3d0a0a"></div>
+              <div class="sim-bulb" id="sn-y" style="background:#3d300a"></div>
+              <div class="sim-bulb" id="sn-g" style="background:#0a3d0a"></div>
+            </div>
+            <div class="sim-light" style="bottom:28%;left:48%;transform:translate(-50%,50%)" id="sl-south">
+              <div class="sim-bulb" id="ss-r" style="background:#3d0a0a"></div>
+              <div class="sim-bulb" id="ss-y" style="background:#3d300a"></div>
+              <div class="sim-bulb" id="ss-g" style="background:#0a3d0a"></div>
+            </div>
+            <div class="sim-light" style="left:28%;top:52%;transform:translate(-50%,-50%)" id="sl-west">
+              <div class="sim-bulb" id="sw-r" style="background:#3d0a0a"></div>
+              <div class="sim-bulb" id="sw-y" style="background:#3d300a"></div>
+              <div class="sim-bulb" id="sw-g" style="background:#0a3d0a"></div>
+            </div>
+            <div class="sim-light" style="right:28%;top:48%;transform:translate(50%,-50%)" id="sl-east">
+              <div class="sim-bulb" id="se-r" style="background:#3d0a0a"></div>
+              <div class="sim-bulb" id="se-y" style="background:#3d300a"></div>
+              <div class="sim-bulb" id="se-g" style="background:#0a3d0a"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="demo-panel reveal">
+          <div class="demo-header">
+            <div class="dot dot-red"></div>
+            <div class="dot dot-yellow"></div>
+            <div class="dot dot-green"></div>
+            <span class="demo-title">dcsp_controller.py</span>
+          </div>
+          <div class="demo-body">
+            <div class="ctrl-panel">
+              <div class="ctrl-row">
+                <span class="ctrl-label">NORTH DENSITY</span>
+                <input type="range" id="dn" min="0" max="10" value="5" />
+                <span class="ctrl-val" id="dn-val">5</span>
+              </div>
+              <div class="ctrl-row">
+                <span class="ctrl-label">SOUTH DENSITY</span>
+                <input type="range" id="ds" min="0" max="10" value="3" />
+                <span class="ctrl-val" id="ds-val">3</span>
+              </div>
+              <div class="ctrl-row">
+                <span class="ctrl-label">EAST DENSITY</span>
+                <input type="range" id="de" min="0" max="10" value="7" />
+                <span class="ctrl-val" id="de-val">7</span>
+              </div>
+              <div class="ctrl-row">
+                <span class="ctrl-label">WEST DENSITY</span>
+                <input type="range" id="dw" min="0" max="10" value="2" />
+                <span class="ctrl-val" id="dw-val">2</span>
+              </div>
+              <button class="btn-sim" id="sim-btn" onclick="toggleSim()">▶ START SIMULATION</button>
+            </div>
+
+            <div class="metrics-grid">
+              <div class="metric-box">
+                <span class="m-val" id="m-green">--</span>
+                <span class="m-label">Active Direction</span>
+              </div>
+              <div class="metric-box">
+                <span class="m-val" id="m-timer">--</span>
+                <span class="m-label">Green Time (s)</span>
+              </div>
+              <div class="metric-box">
+                <span class="m-val" id="m-cycle">0</span>
+                <span class="m-label">Cycles Completed</span>
+              </div>
+              <div class="metric-box">
+                <span class="m-val" id="m-saved" style="color:var(--accent2)">0%</span>
+                <span class="m-label">Wait Reduction</span>
+              </div>
+            </div>
+
+            <div class="status-log" id="status-log">
+              <div style="color:var(--muted)">// DCSP Controller Ready</div>
+              <div style="color:var(--muted)">// Adjust density sliders and press START</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- OUTCOMES -->
+  <section id="outcomes">
+    <div class="section-inner">
+      <span class="section-tag reveal">06 — Expected Outcomes</span>
+      <h2 class="section-title reveal">What We <span class="dim">Achieve</span></h2>
+      <div class="outcomes-grid">
+        <div class="outcome-card reveal">
+          <span class="outcome-icon">⏱️</span>
+          <span class="outcome-pct">40%</span>
+          <div class="outcome-title">Reduced Wait Time</div>
+          <p class="outcome-desc">Adaptive timing significantly decreases vehicle wait times at intersections, improving the overall traffic flow.</p>
+        </div>
+        <div class="outcome-card reveal">
+          <span class="outcome-icon">🟢</span>
+          <span class="outcome-pct">↑</span>
+          <div class="outcome-title">Dynamic Green Time</div>
+          <p class="outcome-desc">Green light durations are computed in real-time based on density data, eliminating wasted signal cycles.</p>
+        </div>
+        <div class="outcome-card reveal">
+          <span class="outcome-icon">🏙️</span>
+          <span class="outcome-pct">↓</span>
+          <div class="outcome-title">Lower Congestion</div>
+          <p class="outcome-desc">Urban congestion is minimized during peak hours, enhancing travel times and reducing driver frustration.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="section-inner">
+      <span class="section-tag reveal">07 — The Team</span>
+      <h2 class="section-title reveal">Project <span class="dim">Members</span></h2>
+      <div class="team-grid">
+        <div class="team-card reveal">
+          <div class="team-avatar">DA</div>
+          <div class="team-info">
+            <h3>Devank Dharmendra Agrawal</h3>
+            <div class="team-role">Lead Developer &amp; Researcher</div>
+            <div class="team-id">Enrollment: 2427030447</div>
+          </div>
+        </div>
+        <div class="team-card reveal">
+          <div class="team-avatar" style="background:linear-gradient(135deg,var(--accent2),#ff003c)">MK</div>
+          <div class="team-info">
+            <h3>Dr. Mohit Kushwaha</h3>
+            <div class="team-role" style="color:var(--accent2)">Project Supervisor</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FUTURE -->
+  <section id="future">
+    <div class="section-inner">
+      <span class="section-tag reveal">08 — Future Directions</span>
+      <h2 class="section-title reveal">What's <span class="dim">Coming Next</span></h2>
+      <ul class="future-list">
+        <li class="future-item reveal"><strong>Real-Time Simulation</strong><span>Implement a full real-time simulation of the proposed traffic control system to evaluate performance across various urban scenarios and traffic conditions.</span></li>
+        <li class="future-item reveal"><strong>IoT Integration</strong><span>Explore integration of IoT sensors alongside CCTV for richer, multi-source data collection and improved adaptability in real-world deployments.</span></li>
+        <li class="future-item reveal"><strong>Emergency Vehicle Priority</strong><span>Extend the DCSP framework with emergency override protocols to detect and clear paths for ambulances, fire trucks, and police vehicles.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">STLS</div>
+    <div class="footer-text">
+      Smart Traffic Light System<br>
+      <span style="color:var(--border)">PBL 2 Synopsis · 2025-26</span>
+    </div>
+    <div class="footer-inst">Dept of Computer Science Engineering</div>
+  </footer>
+
+  <script>
+    /* ══════════════════════════════════════════
+       HERO TRAFFIC LIGHT CYCLE
+    ══════════════════════════════════════════ */
+    const heroLights = [
+      { id: 'hero-red',    on: 'red-on',    off: 'red-off'    },
+      { id: 'hero-yellow', on: 'yellow-on', off: 'yellow-off' },
+      { id: 'hero-green',  on: 'green-on',  off: 'green-off'  },
+    ];
+    let heroPhase = 0;
+    const heroDurations = [3000, 1000, 3000];
+    function cycleHeroLight() {
+      heroLights.forEach((l, i) => {
+        const el = document.getElementById(l.id);
+        el.className = 'light-bulb ' + (i === heroPhase ? l.on : l.off);
+      });
+      setTimeout(() => { heroPhase = (heroPhase + 1) % 3; cycleHeroLight(); }, heroDurations[heroPhase]);
+    }
+    cycleHeroLight();
+
+    /* ══════════════════════════════════════════
+       SCROLL REVEAL
+    ══════════════════════════════════════════ */
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    /* ══════════════════════════════════════════
+       ANIMATED COUNTERS
+    ══════════════════════════════════════════ */
+    const counters = document.querySelectorAll('[data-target]');
+    const cObs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        const el = e.target;
+        const target = +el.dataset.target;
+        let cur = 0;
+        const step = target / 40;
+        const timer = setInterval(() => {
+          cur = Math.min(cur + step, target);
+          el.textContent = Math.round(cur) + (el.dataset.suffix || '');
+          if (cur >= target) clearInterval(timer);
+        }, 30);
+        cObs.unobserve(el);
+      });
+    }, { threshold: 0.5 });
+    counters.forEach(c => cObs.observe(c));
+
+    /* ══════════════════════════════════════════
+       ROAD VIS — Congestion Display
+    ══════════════════════════════════════════ */
+    (function buildRoadVis() {
+      const vis = document.getElementById('road-vis');
+      vis.innerHTML = `
+        <div style="position:absolute;top:50%;left:0;right:0;height:50px;background:#1a1a2e;transform:translateY(-50%);border:1px solid var(--border)"></div>
+        <div style="position:absolute;left:50%;top:0;bottom:0;width:50px;background:#1a1a2e;transform:translateX(-50%);border:1px solid var(--border)"></div>
+        <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;background:#222233;transform:translate(-50%,-50%)"></div>
+      `;
+      const colors = ['#ff6b35','#ffd700','#3776ab','#cc66ff','#ff3b3b','#39ff14'];
+      for (let i = 0; i < 5; i++) {
+        const car = document.createElement('div');
+        car.className = 'sim-car';
+        car.style.cssText = `width:18px;height:10px;background:${colors[i%colors.length]};border-radius:3px;top:calc(50% - 15px + ${(i%2)*14}px);left:${5+i*12}%;opacity:0.85;`;
+        vis.appendChild(car);
+      }
+      for (let i = 0; i < 4; i++) {
+        const car = document.createElement('div');
+        car.className = 'sim-car';
+        car.style.cssText = `width:10px;height:18px;background:${colors[(i+2)%colors.length]};border-radius:3px;left:calc(50% - 13px + ${(i%2)*16}px);top:${5+i*14}%;opacity:0.85;`;
+        vis.appendChild(car);
+      }
+    })();
+
+    /* ══════════════════════════════════════════
+       SLIDER SYNC
+    ══════════════════════════════════════════ */
+    ['dn','ds','de','dw'].forEach(id => {
+      const slider = document.getElementById(id);
+      const val = document.getElementById(id + '-val');
+      slider.addEventListener('input', () => { val.textContent = slider.value; });
+    });
+
+    /* ══════════════════════════════════════════
+       SIMULATION ENGINE
+    ══════════════════════════════════════════ */
+    let simRunning = false;
+    let simTimeout = null;
+    let simInterval = null;
+    let cycleCount = 0;
+
+    const directions = ['N', 'S', 'E', 'W'];
+    const dirNames   = { N: 'NORTH', S: 'SOUTH', E: 'EAST', W: 'WEST' };
+    const lights     = {
+      N: { r: 'sn-r', y: 'sn-y', g: 'sn-g' },
+      S: { r: 'ss-r', y: 'ss-y', g: 'ss-g' },
+      E: { r: 'se-r', y: 'se-y', g: 'se-g' },
+      W: { r: 'sw-r', y: 'sw-y', g: 'sw-g' },
+    };
+
+    const MAX_GREEN_CYCLES = 2;
+    let consecutiveWins = { N: 0, S: 0, E: 0, W: 0 };
+    let lastActive = null;
+
+    function setLight(dir, color) {
+      const l = lights[dir];
+      const rEl = document.getElementById(l.r);
+      const yEl = document.getElementById(l.y);
+      const gEl = document.getElementById(l.g);
+      rEl.style.background  = color === 'red'    ? 'var(--red)'    : '#3d0a0a';
+      rEl.style.boxShadow   = color === 'red'    ? '0 0 10px var(--red)'    : 'none';
+      yEl.style.background  = color === 'yellow' ? 'var(--yellow)' : '#3d300a';
+      yEl.style.boxShadow   = color === 'yellow' ? '0 0 10px var(--yellow)' : 'none';
+      gEl.style.background  = color === 'green'  ? 'var(--green)'  : '#0a3d0a';
+      gEl.style.boxShadow   = color === 'green'  ? '0 0 10px var(--green)'  : 'none';
+    }
+
+    function allRed() { directions.forEach(d => setLight(d, 'red')); }
+
+    function log(msg, color = 'var(--accent3)') {
+      const el   = document.getElementById('status-log');
+      const line = document.createElement('div');
+      const ts   = new Date().toLocaleTimeString('en-IN', { hour12: false });
+      line.style.color = color;
+      line.textContent = `[${ts}] ${msg}`;
+      el.appendChild(line);
+      el.scrollTop = el.scrollHeight;
+    }
+
+    function getDensities() {
+      return {
+        N: +document.getElementById('dn').value,
+        S: +document.getElementById('ds').value,
+        E: +document.getElementById('de').value,
+        W: +document.getElementById('dw').value,
+      };
+    }
+
+    function pickNextDirection(densities) {
+      const sorted = directions.slice().sort((a, b) => densities[b] - densities[a]);
+      for (const dir of sorted) {
+        if (consecutiveWins[dir] < MAX_GREEN_CYCLES) return dir;
+      }
+      // All hit cap — reset and pick highest
+      consecutiveWins = { N: 0, S: 0, E: 0, W: 0 };
+      return sorted[0];
+    }
+
+    function startCountdown(seconds, onDone) {
+      let remaining = seconds;
+      document.getElementById('m-timer').textContent = remaining;
+      simInterval = setInterval(() => {
+        remaining--;
+        document.getElementById('m-timer').textContent = remaining;
+        if (remaining <= 0) {
+          clearInterval(simInterval);
+          simInterval = null;
+          onDone();
+        }
+      }, 1000);
+    }
+
+    function runCycle() {
+      if (!simRunning) return;
+
+      const densities = getDensities();
+      const active    = pickNextDirection(densities);
+
+      if (active === lastActive) {
+        consecutiveWins[active]++;
+      } else {
+        if (lastActive) consecutiveWins[lastActive] = 0;
+        consecutiveWins[active] = 1;
+      }
+      lastActive = active;
+
+      const MIN_GREEN  = 5;   // every road gets at least 5s even at zero density
+      const MAX_GREEN  = 20;  // no road holds green longer than 20s
+      const rawTime    = Math.round(MIN_GREEN + densities[active] * 1.5);
+      const greenTime  = Math.min(Math.max(rawTime, MIN_GREEN), MAX_GREEN);
+      const fixedGreen = 10;
+      const saved      = Math.round(((fixedGreen - greenTime) / fixedGreen) * 100);
+
+      document.getElementById('m-green').textContent = dirNames[active];
+      document.getElementById('m-saved').textContent = (saved > 0 ? '+' : '') + saved + '%';
+
+      log(`DCSP → ${dirNames[active]} (density=${densities[active]}, wins=${consecutiveWins[active]}). Green=${greenTime}s`, 'var(--accent)');
+
+      // Phase 1: all red, then yellow (1s)
+      allRed();
+      setLight(active, 'yellow');
+      log(`${dirNames[active]}: YELLOW`, 'var(--yellow)');
+
+      simTimeout = setTimeout(() => {
+        if (!simRunning) return;
+
+        // Phase 2: green with live countdown
+        setLight(active, 'green');
+        log(`${dirNames[active]}: GREEN (${greenTime}s)`, 'var(--accent3)');
+
+        startCountdown(greenTime, () => {
+          if (!simRunning) return;
+
+          // Phase 3: yellow clearance (1s)
+          setLight(active, 'yellow');
+          log(`${dirNames[active]}: YELLOW → clearing`, 'var(--yellow)');
+          document.getElementById('m-timer').textContent = '--';
+
+          simTimeout = setTimeout(() => {
+            if (!simRunning) return;
+            allRed();
+            cycleCount++;
+            document.getElementById('m-cycle').textContent = cycleCount;
+            log(`Cycle #${cycleCount} complete. Recalculating...`, 'var(--muted)');
+            simTimeout = setTimeout(runCycle, 800);
+          }, 1000);
+        });
+      }, 1000);
+    }
+
+    function toggleSim() {
+      const btn = document.getElementById('sim-btn');
+      if (!simRunning) {
+        simRunning      = true;
+        cycleCount      = 0;
+        consecutiveWins = { N: 0, S: 0, E: 0, W: 0 };
+        lastActive      = null;
+        btn.textContent = '■ STOP SIMULATION';
+        btn.classList.add('stop');
+        log('DCSP Engine started. Analyzing densities...', 'var(--accent)');
+        allRed();
+        simTimeout = setTimeout(runCycle, 600);
+      } else {
+        simRunning = false;
+        clearTimeout(simTimeout);
+        clearInterval(simInterval);
+        simInterval = null;
+        allRed();
+        btn.textContent = '▶ START SIMULATION';
+        btn.classList.remove('stop');
+        document.getElementById('m-green').textContent = '--';
+        document.getElementById('m-timer').textContent = '--';
+        log('Simulation stopped.', 'var(--red)');
+      }
+    }
+  </script>
+</body>
+</html>
